@@ -12,7 +12,6 @@ function Book(title, author, pages, isRead) {
     this.author = author;
     this.pages = pages;
     this.isRead = isRead;
-
 }
 
 Book.prototype.toggle = function () {
@@ -22,10 +21,6 @@ Book.prototype.toggle = function () {
 function toggle(index) {
     myLibrary[index].toggle();
     render();
-}
-
-function readUpdate() {
-
 }
 
 let myLibrary = [];
@@ -72,7 +67,6 @@ function valueCheck() {
     check = true;
 }
 
-
 // UI
 
 const modal = document.querySelector('.modal');
@@ -92,7 +86,6 @@ const closeModal = function () {
 
 addBook.addEventListener('click', openModal);
 
-
 document.addEventListener('keydown', function (e) {
     // console.log(e.key);
     if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
@@ -100,22 +93,23 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
-
 function render() {
     const bookCard = document.querySelector('.bookCard');
-    const bookEl = document.createElement('div');
-    bookEl.innerHTML = "";
+    bookCard.innerHTML = "";
     if (check) {
         for (let i = 0; i < myLibrary.length; i++) {
             let book = myLibrary[i];
+            const bookEl = document.createElement('div');
+            const readBtn = document.querySelector('read-book');
             bookEl.setAttribute('class', 'book-box');
             bookEl.innerHTML = `<p class="title">Title: ${book.title}</p>
             <p class="author">Author: ${book.author}</p>
             <p class="pages">Pages: ${book.pages}</p>
             <div class="btn-group">
-                <button onclick="toggle(${i})" class="read-book">${book.isRead ? "Read" : "Not Read"}</button>
-                <button onclick="removeBook(${i})" class="remove-book">Remove</button>
-            </div>`
+                <button onclick="toggle(${i}); " class="read-book">${book.isRead ? "Read" : "Not Read"
+                }</button >
+            <button onclick="removeBook(${i})" class="remove-book">Remove</button>
+            </div > `
             bookCard.appendChild(bookEl);
         }
     }

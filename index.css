@@ -145,6 +145,6 @@ input {
     font-size: inherit;
 }
 
-.read-book {
-    background-color: rgb(250, 80, 80);
+.color-red {
+    background-color: red;
 }
