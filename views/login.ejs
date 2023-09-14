@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/register.css" />
-    <title>Document</title>
+    <title>Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,8 +18,16 @@
   <body>
     <div class="register-wrapper">
       <div class="register-form-div">
-        <form action="/login" class="add-book-form" id="addBookForm">
-            <h2>Log In</h2>
+        <% if(messages.error) { %>
+           <%= messages.error %> 
+           <% } %>
+        <form
+          method="POST"
+          action="/login"
+          class="add-book-form"
+          id="addBookForm"
+        >
+          <h2>Log In</h2>
           <div>
             <label for="email">Email</label>
             <input type="text" name="email" id="email" required />
@@ -30,8 +38,8 @@
             <input type="text" name="password" id="password" required />
           </div>
           <div class="register-login">
-              <button type="submit" class="register-button">Log In</button>
-              <a class="login-href" href="/register">Register</a>
+            <button type="submit" class="register-button">Log In</button>
+            <a class="login-href" href="/register">Register</a>
           </div>
         </form>
       </div>
