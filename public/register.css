@@ -27,6 +27,7 @@ input {
     border: 1px solid rgb(184, 181, 181);
     border-radius: 10px;
     background-color: #faebd7;
+    padding: 10px;
 }
 
 .register-button {

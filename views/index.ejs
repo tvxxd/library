@@ -17,8 +17,13 @@
   <body>
     <header class="header">
       <h1>Library</h1>
-      <button id="addbook" class="hidden btn">Add Book</button>
-      <a href="/views/login.ejs" id="log-out" class="btn btn-red log-in">Log In</a>
+      <p>
+        <span style="font-weight: 700;">Hi,</span> <%= name %>
+      </p>
+      <button id="addbook" class="btn">Add Book</button>
+      <form action="/logout?_method=DELETE" method="POST">
+        <button class="btn" type="submit">Log Out</button>
+      </form>
     </header>
 
     <div class="overlay hidden"></div>

@@ -9,13 +9,15 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const flash = require("express-flash");
 const session = require("express-session");
+const methodOverride = require("method-override");
 
 let accounts = [];
 const initPassport = require("./passport");
-initPassport(passport, (email) =>
-  accounts.find((user) => user.email === email)
+initPassport(
+  passport,
+  (email) => accounts.find((user) => user.email === email),
+  (id) => accounts.find((user) => user.id === id)
 );
-
 
 app.set("view-engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
@@ -29,20 +31,21 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.get("/", (req, res) => {
-  res.render("index.ejs");
-});
-// app.get("/views/login.ejs", (req, res) => {
-//   res.render("login.ejs");
-// });
-
-app.get("/login", (req, res) => {
+app.use(methodOverride("_method"));
+app.get("/views/login.ejs", (req, res) => {
   res.render("login.ejs");
-})
+});
+app.get("/", checkAuthenticated, (req, res) => {
+  res.render("index.ejs", { name: req.user.name });
+});
+
+app.get("/login", checkNotAuthenticated, (req, res) => {
+  res.render("login.ejs");
+});
 
 app.post(
   "/login",
+  checkNotAuthenticated,
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
@@ -50,13 +53,12 @@ app.post(
   })
 );
 
-app.get("/register", (req, res) => {
+app.get("/register", checkNotAuthenticated, (req, res) => {
   res.render("register.ejs");
 });
 
-app.post("/register", async (req, res) => {
+app.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
-    console.log(accounts);
     const hashedPsw = await bcrypt.hash(req.body.password, 10);
     accounts.push({
       id: Date.now().toString(),
@@ -67,11 +69,33 @@ app.post("/register", async (req, res) => {
     res.redirect("/login");
   } catch (error) {
     res.redirect("/register");
-    console.log(error);
   }
 });
 
+app.delete("/logout", (req, res) => {
+  req.logOut((err) => {
+    if(err) {
+      throw err;
+    }
+    res.redirect("/login");
+  });
+});
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/");
+  }
+  next();
+}
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.listen(3000);
+const port = 3000;
+app.listen(port);
