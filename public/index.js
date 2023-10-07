@@ -1,121 +1,133 @@
-// ds
-
-const $form = document.querySelector('.add-book-form').addEventListener('submit', function (e) {
+const $form = document
+  .querySelector(".add-book-form")
+  .addEventListener("submit", function (e) {
     e.preventDefault();
-    addBookToLibrary();
-    clearform();
-    render();
-})
+    const title = document.getElementById("title").value;
+    const author = document.getElementById("author").value;
+    const pages = document.getElementById("pages").value;
+    const isRead = document.getElementById("isRead").checked;
 
-function Book(title, author, pages, isRead) {
+    if (library.addBookToLibrary(title, author, pages, isRead)) {
+      clearform();
+      render();
+    }
+  });
+
+class Book {
+  constructor(title, author, pages, isRead) {
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.isRead = isRead;
-}
+  }
 
-Book.prototype.toggle = function () {
+  toggle() {
     this.isRead = !this.isRead;
+  }
 }
 
-function toggle(index) {
-    myLibrary[index].toggle();
-    render();
-}
+class Library {
+  constructor() {
+    this.myLibrary = [];
+  }
 
-let myLibrary = [];
+  addBookToLibrary(title, author, pages, isRead) {
+    if (!this.valueCheck(title, author, pages)) {
+      this.showError("Fill in all fields.");
 
-const $title = document.getElementById('title');
-const $author = document.getElementById('author');
-const $pages = document.getElementById('pages');
-const $status = document.getElementById('isRead');
-
-function addBookToLibrary() {
-    valueCheck();
-    const newBook = new Book($title.value, $author.value, $pages.value, $status.checked);
-
-    myLibrary.push(newBook);
-
-}
-
-function removeBook(index) {
-    myLibrary.splice(index, 1);
-    console.log(myLibrary);
-    updateUI();
-    render();
-}
-
-const booksGrid = document.getElementById('booksGrid');
-
-function updateUI() {
-    booksGrid.innerHTML = "";
-}
-
-function clearform() {
-    const $inputs = document.querySelectorAll('input');
-    $inputs.forEach(input => input.value = '');
-}
-
-let check = true;
-
-function valueCheck() {
-    if ($title.value.length === 0 || $author.value.length === 0 || $pages.value.length === 0) {
-        alert("Fill all the fields");
-        check = false;
-        return false;
+      return false;
     }
-    check = true;
+
+    const newBook = new Book(title, author, pages, isRead);
+    this.myLibrary.push(newBook);
+    this.clearError();
+    return true;
+  }
+
+  removeBook(index) {
+    this.myLibrary.splice(index, 1);
+  }
+
+  valueCheck(title, author, pages) {
+    return title.length > 0 || author.length > 0 || pages.length > 0;
+  }
+  showError(message) {
+    const errorElement = document.getElementById("book-add-error");
+    errorElement.textContent = message;
+  }
+
+  clearError() {
+    const errorElement = document.getElementById("book-add-error");
+    errorElement.textContent = "";
+  }
 }
+
+const library = new Library();
 
 // UI
-
-const modal = document.querySelector('.modal');
-const addBook = document.getElementById('addbook');
-const overlay = document.querySelector('.overlay');
+const modal = document.querySelector(".modal");
+const addBook = document.getElementById("addbook");
+const overlay = document.querySelector(".overlay");
 
 const openModal = function (e) {
-    e.preventDefault();
-    modal.classList.remove('hidden');
-    overlay.classList.remove('hidden');
+  e.preventDefault();
+  modal.classList.remove("hidden");
+  overlay.classList.remove("hidden");
 };
 
 const closeModal = function () {
-    modal.classList.add('hidden');
-    overlay.classList.add('hidden');
+  modal.classList.add("hidden");
+  overlay.classList.add("hidden");
 };
 
-addBook.addEventListener('click', openModal);
+addBook.addEventListener("click", openModal);
 
-document.addEventListener('keydown', function (e) {
-    // console.log(e.key);
-    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-        closeModal();
-    }
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+    closeModal();
+  }
 });
 
 function render() {
-    const bookCard = document.querySelector('.bookCard');
-    bookCard.innerHTML = "";
-    if (check) {
-        for (let i = 0; i < myLibrary.length; i++) {
-            let book = myLibrary[i];
-            const bookEl = document.createElement('div');
-            const readBtn = document.querySelector('read-book');
-            bookEl.setAttribute('class', 'book-box');
-            bookEl.innerHTML = `<p class="title">Title: ${book.title}</p>
-            <p class="author">Author: ${book.author}</p>
-            <p class="pages">Pages: ${book.pages}</p>
-            <div class="btn-group">
-                <button onclick="toggle(${i}); " class="read-book">${book.isRead ? "Read" : "Not Read"
-                }</button >
-            <button onclick="removeBook(${i})" class="remove-book">Remove</button>
-            </div > `
-            bookCard.appendChild(bookEl);
-        }
-    }
-    if (check) {
-        closeModal();
-    }
+  const bookCard = document.querySelector(".bookCard");
+  bookCard.innerHTML = "";
 
+  if (library.myLibrary.length > 0) {
+    for (let i = 0; i < library.myLibrary.length; i++) {
+      const book = library.myLibrary[i];
+      const bookEl = document.createElement("div");
+      bookEl.setAttribute("class", "book-box");
+      bookEl.innerHTML = `<p class="title">Title: ${book.title}</p>
+              <p class="author">Author: ${book.author}</p>
+              <p class="pages">Pages: ${book.pages}</p>
+              <div class="btn-group">
+                  <button onclick="toggle(${i}); " class="read-book">${
+        book.isRead ? "Read" : "Not Read"
+      }</button >
+              <button onclick="removeBook(${i})" class="remove-book">Remove</button>
+              </div > `;
+      bookCard.appendChild(bookEl);
+    }
+  }
+
+  if (library.valueCheck("", "", "")) {
+    closeModal();
+  }
 }
 
+function toggle(index) {
+  library.myLibrary[index].toggle();
+  render();
+}
+
+function removeBook(index) {
+  library.removeBook(index);
+  render();
+}
+
+function clearform() {
+  const $inputs = document.querySelectorAll("input");
+  $inputs.forEach((input) => (input.value = ""));
+}
+
+render();
