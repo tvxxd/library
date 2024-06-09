@@ -27,12 +27,13 @@ img {
 }
 
 .form {
+  margin: 0 auto;
   padding: 2.8rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  
+  flex-wrap: wrap;
 }
 
 .form button {
@@ -51,4 +52,61 @@ input {
   font-weight: 700;
   font-size: 1.8rem;
   cursor: pointer;
+}
+
+#root {
+  margin: 0 auto;
+  width: 90%;
+  max-width: 93.75em;
+}
+
+.book-list {
+  margin: 0 auto;
+  height: 200px;
+  overflow: hidden;
+}
+
+.book-list ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+  justify-content: center;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 1.2rem;
+}
+
+.book-list ul li button {
+  all: unset;
+  cursor: pointer;
+  color: #fff;
+}
+
+.book-list .selected {
+  text-decoration: line-through;
+}
+
+.book-list span {
+  border-radius: 0.3rem;
+  padding-inline: 0.5rem;
+}
+
+li {
+  list-style: none;
+  background-color: #ffbd59;
+  padding-inline: 0.5rem;
+  border-radius: 0.3rem;
+}
+
+.book-list ul::-webkit-scrollbar {
+  width: 0.7rem;
+}
+
+.book-list ul::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.book-list ul {
+  scrollbar-width: thin;
+  scrollbar-color: #ffbd59 #f1f1f1;
 }

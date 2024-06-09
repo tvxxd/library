@@ -2,10 +2,18 @@ import { useState } from "react";
 import "./App.css";
 
 export default function App() {
+  const [books, setBooks] = useState([]);
+
+  function handleAddBook(book) {
+    setBooks((books) => [...books, book]);
+    console.log(books);
+  }
+
   return (
     <>
       <Logo />
-      <Form />
+      <Form onBookAdd={handleAddBook} />
+      <BookList books={books} />
     </>
   );
 }
@@ -17,7 +25,7 @@ function Logo() {
     </div>
   );
 }
-function Form() {
+function Form({ onBookAdd }) {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState(1);
 
@@ -27,7 +35,8 @@ function Form() {
 
     const newBook = { id: Date.now(), name, quantity, read: false };
 
-    console.log(newBook);
+    onBookAdd(newBook);
+
     setQuantity(1);
     setName("");
   }
@@ -54,6 +63,26 @@ function Form() {
     </form>
   );
 }
-function BookList() {}
-function Book() {}
+function BookList({ books }) {
+  return (
+    <div className="book-list">
+      <ul>
+        {books.map((book) => (
+          <Book key={book.id} book={book} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+function Book({ book }) {
+  return (
+    <li key={book.id}>
+      <input type="checkbox" />
+      <span className={book.read ? "selected" : ""}>
+        {book.name}, {book.quantity}
+      </span>
+      <button>✖</button>
+    </li>
+  );
+}
 function Summary() {}
